@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅遊助手 - Travel Companion</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-plane-departure"></i>
+                    <h1>Travel Companion</h1>
+                </div>
+                <button class="menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-content">
+                <h2>歡迎使用旅遊助手</h2>
+                <p>讓我們幫您規劃完美的旅程</p>
+            </div>
+            <div class="welcome-image">
+                <i class="fas fa-globe-asia"></i>
+            </div>
+        </section>
+
+        <!-- Recommended Itineraries Section -->
+        <section class="recommended-section">
+            <h3 class="section-title">推薦行程</h3>
+            <div class="itinerary-cards">
+                <!-- Itinerary Card 1 -->
+                <div class="itinerary-card">
+                    <div class="itinerary-image">
+                        <!-- 圖片路徑：可修改為 images/taipei.jpg -->
+                        <img src="default.jpeg" alt="台北一日遊">
+                        <div class="itinerary-badge">熱門</div>
+                    </div>
+                    <div class="itinerary-content">
+                        <h4>台北經典一日遊</h4>
+                        <p class="itinerary-desc">探索台北最具代表性的景點，從故宮到101</p>
+                        <div class="itinerary-info">
+                            <span class="info-item">
+                                <i class="fas fa-clock"></i>
+                                1天
+                            </span>
+                            <span class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                5個景點
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Itinerary Card 2 -->
+                <div class="itinerary-card">
+                    <div class="itinerary-image">
+                        <!-- 圖片路徑：可修改為 images/tainan.jpg -->
+                        <img src="default.jpeg" alt="台南美食之旅">
+                        <div class="itinerary-badge new">新推薦</div>
+                    </div>
+                    <div class="itinerary-content">
+                        <h4>台南美食文化之旅</h4>
+                        <p class="itinerary-desc">品嚐道地小吃，感受古都文化魅力</p>
+                        <div class="itinerary-info">
+                            <span class="info-item">
+                                <i class="fas fa-clock"></i>
+                                2天1夜
+                            </span>
+                            <span class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                8個景點
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Itinerary Card 3 -->
+                <div class="itinerary-card">
+                    <div class="itinerary-image">
+                        <!-- 圖片路徑：可修改為 images/hualien.jpg -->
+                        <img src="default.jpeg" alt="花蓮太魯閣">
+                        <div class="itinerary-badge">推薦</div>
+                    </div>
+                    <div class="itinerary-content">
+                        <h4>花蓮太魯閣壯遊</h4>
+                        <p class="itinerary-desc">欣賞東台灣的壯麗山水與自然奇景</p>
+                        <div class="itinerary-info">
+                            <span class="info-item">
+                                <i class="fas fa-clock"></i>
+                                3天2夜
+                            </span>
+                            <span class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                6個景點
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Itinerary Card 4 -->
+                <div class="itinerary-card">
+                    <div class="itinerary-image">
+                        <!-- 圖片路徑：可修改為 images/alishan.jpg -->
+                        <img src="default.jpeg" alt="阿里山日出">
+                    </div>
+                    <div class="itinerary-content">
+                        <h4>阿里山賞日出之旅</h4>
+                        <p class="itinerary-desc">在雲海中迎接第一道曙光</p>
+                        <div class="itinerary-info">
+                            <span class="info-item">
+                                <i class="fas fa-clock"></i>
+                                2天1夜
+                            </span>
+                            <span class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                4個景點
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Itinerary Card 5 -->
+                <div class="itinerary-card">
+                    <div class="itinerary-image">
+                        <!-- 圖片路徑：可修改為 images/kenting.jpg -->
+                        <img src="default.jpeg" alt="墾丁海灘">
+                        <div class="itinerary-badge">熱門</div>
+                    </div>
+                    <div class="itinerary-content">
+                        <h4>墾丁陽光沙灘</h4>
+                        <p class="itinerary-desc">享受南台灣的熱情陽光與碧海藍天</p>
+                        <div class="itinerary-info">
+                            <span class="info-item">
+                                <i class="fas fa-clock"></i>
+                                3天2夜
+                            </span>
+                            <span class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                7個景點
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Itinerary Card 6 -->
+                <div class="itinerary-card">
+                    <div class="itinerary-image">
+                        <!-- 圖片路徑：可修改為 images/sunmoon.jpg -->
+                        <img src="default.jpeg" alt="日月潭">
+                    </div>
+                    <div class="itinerary-content">
+                        <h4>日月潭環湖之旅</h4>
+                        <p class="itinerary-desc">騎行環湖步道，體驗湖光山色</p>
+                        <div class="itinerary-info">
+                            <span class="info-item">
+                                <i class="fas fa-clock"></i>
+                                1天
+                            </span>
+                            <span class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                3個景點
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Cards -->
+        <section class="features-section">
+            <h3 class="section-title">選擇功能</h3>
+            
+            <div class="feature-cards">
+                <!-- Trip Planning Card -->
+                <div class="feature-card" onclick="navigateTo('plan.html')">
+                    <div class="card-icon planning">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>旅遊行程規劃</h4>
+                        <p>輸入目的地與時間，讓 AI 協助您規劃完美行程</p>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> 手動新增景點</li>
+                            <li><i class="fas fa-check"></i> AI 智能推薦</li>
+                            <li><i class="fas fa-check"></i> 時間軸呈現</li>
+                        </ul>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Content Generator Card -->
+                <div class="feature-card" onclick="navigateTo('write.html')">
+                    <div class="card-icon writing">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>旅遊文案生成器</h4>
+                        <p>上傳您的旅行照片，AI 自動生成精彩文案</p>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> 照片上傳排序</li>
+                            <li><i class="fas fa-check"></i> AI 生成文案</li>
+                            <li><i class="fas fa-check"></i> 社群分享</li>
+                        </ul>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Coming Soon Card -->
+                <div class="feature-card coming-soon">
+                    <div class="card-icon explore">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>景點探索</h4>
+                        <p>探索周邊熱門景點與隱藏美食</p>
+                        <div class="coming-soon-badge">
+                            <i class="fas fa-clock"></i> 即將推出
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Stats -->
+        <section class="stats-section">
+            <h3 class="section-title">使用統計</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <div class="stat-number">1,234</div>
+                    <div class="stat-label">行程規劃</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <div class="stat-number">5,678</div>
+                    <div class="stat-label">文案生成</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">890</div>
+                    <div class="stat-label">活躍用戶</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">滿意度</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tips Section -->
+        <section class="tips-section">
+            <h3 class="section-title">使用小技巧</h3>
+            <div class="tips-container">
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="tip-content">
+                        <h5>善用 AI 推薦</h5>
+                        <p>讓 AI 為您推薦當地熱門景點，省時又方便</p>
+                    </div>
+                </div>
+                
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="tip-content">
+                        <h5>照片順序很重要</h5>
+                        <p>依照行程順序排列照片，文案更有故事性</p>
+                    </div>
+                </div>
+                
+                <div class="tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="tip-content">
+                        <h5>預留彈性時間</h5>
+                        <p>規劃行程時記得預留休息與彈性調整的時間</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p>&copy; 2025 Travel Companion. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item" data-page="home">
+            <div class="nav-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="nav-label">首頁</div>
+        </div>
+        <div class="nav-item" data-page="plan">
+            <div class="nav-icon">
+                <i class="fas fa-route"></i>
+            </div>
+            <div class="nav-label">行程規劃</div>
+        </div>
+        <div class="nav-item" data-page="write">
+            <div class="nav-icon">
+                <i class="fas fa-pen-fancy"></i>
+            </div>
+            <div class="nav-label">文案生成</div>
+        </div>
+        <div class="nav-item" data-page="search">
+            <div class="nav-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="nav-label">搜尋行程</div>
+        </div>
+        <div class="nav-item" data-page="account">
+            <div class="nav-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="nav-label">帳號</div>
+        </div>
+    </nav>
+
+    <script src="index.js"></script>
+</body>
+</html>

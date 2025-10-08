@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅遊文案生成器 - Demo</title>
+    <link rel="stylesheet" href="write.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <button class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="app-title">旅遊文案生成器</h1>
+                <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">上傳照片</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">排列順序</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">生成文案</div>
+                </div>
+            </div>
+
+            <!-- Photo Upload Section -->
+            <section id="upload-section" class="content-section active">
+                <div class="upload-area">
+                    <div class="upload-zone" id="uploadZone">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h3>上傳您的旅遊照片</h3>
+                        <p>選擇或拖拽照片到這裡</p>
+                        <p class="upload-hint">支援 JPG、PNG 格式</p>
+                        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+                        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-plus"></i> 選擇照片
+                        </button>
+                    </div>
+                </div>
+
+                <div class="photo-preview" id="photoPreview">
+                    <!-- Photos will be displayed here -->
+                </div>
+
+                <button class="next-btn" id="nextBtn1" disabled>
+                    下一步：排列順序 <i class="fas fa-arrow-right"></i>
+                </button>
+            </section>
+
+            <!-- Photo Sorting Section -->
+            <section id="sorting-section" class="content-section">
+                <div class="section-header">
+                    <h2>調整照片順序</h2>
+                    <p>長按並拖拽照片來調整行程順序</p>
+                </div>
+
+                <div class="sortable-photos" id="sortablePhotos">
+                    <!-- Sortable photos will be displayed here -->
+                </div>
+
+                <div class="action-buttons">
+                    <button class="back-step-btn" id="backBtn1">
+                        <i class="fas fa-arrow-left"></i> 返回
+                    </button>
+                    <button class="next-btn" id="nextBtn2">
+                        下一步：生成文案 <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Content Generation Section -->
+            <section id="generation-section" class="content-section">
+                <div class="section-header">
+                    <h2>文案預覽</h2>
+                    <p>AI 為您生成的旅遊文案</p>
+                </div>
+
+                <div class="content-preview">
+                    <div class="loading-animation" id="loadingAnimation">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>正在生成您的專屬文案...</p>
+                    </div>
+
+                    <div class="generated-content" id="generatedContent" style="display: none;">
+                        <div class="content-card">
+                            <div class="content-text">
+                                <h3>✨ 我的台灣之旅 ✨</h3>
+                                <p>這次的台灣環島之旅真的太棒了！從台北的繁華都市到花蓮的壯麗山水，每一站都讓我驚艷不已。</p>
+                                
+                                <p>🌅 第一站來到了美麗的日月潭，湖光山色美不勝收，搭船遊湖的感覺超級棒！</p>
+                                
+                                <p>🏔️ 接著前往阿里山看日出，雖然早起很辛苦，但看到那一刻陽光灑在雲海上的景象，一切都值得了！</p>
+                                
+                                <p>🌊 最後在墾丁的海邊結束這趟旅程，藍天白雲配上碧海藍天，簡直是人間仙境～</p>
+                                
+                                <p>台灣真的是個寶島，期待下次再來探索更多美景！</p>
+                                
+                                <div class="hashtags">
+                                    #台灣旅遊 #環島之旅 #日月潭 #阿里山 #墾丁 #travel #taiwan #beautiful
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="social-share">
+                    <h3>分享到社群媒體</h3>
+                    <div class="share-buttons">
+                        <button class="share-btn instagram">
+                            <i class="fab fa-instagram"></i>
+                            Instagram
+                        </button>
+                        <button class="share-btn facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            Facebook
+                        </button>
+                        <button class="share-btn twitter">
+                            <i class="fab fa-twitter"></i>
+                            Twitter
+                        </button>
+                        <button class="share-btn copy">
+                            <i class="fas fa-copy"></i>
+                            複製文案
+                        </button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="back-step-btn" id="backBtn2">
+                        <i class="fas fa-arrow-left"></i> 返回
+                    </button>
+                    <button class="restart-btn" id="restartBtn">
+                        <i class="fas fa-redo"></i> 重新開始
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item" data-page="home">
+            <div class="nav-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="nav-label">首頁</div>
+        </div>
+        <div class="nav-item" data-page="plan">
+            <div class="nav-icon">
+                <i class="fas fa-route"></i>
+            </div>
+            <div class="nav-label">行程規劃</div>
+        </div>
+        <div class="nav-item" data-page="write">
+            <div class="nav-icon">
+                <i class="fas fa-pen-fancy"></i>
+            </div>
+            <div class="nav-label">文案生成</div>
+        </div>
+        <div class="nav-item" data-page="search">
+            <div class="nav-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="nav-label">搜尋行程</div>
+        </div>
+        <div class="nav-item" data-page="account">
+            <div class="nav-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="nav-label">帳號</div>
+        </div>
+    </nav>
+
+    <script src="write.js"></script>
+</body>
+</html>

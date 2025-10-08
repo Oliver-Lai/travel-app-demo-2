@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅遊行程規劃 - Demo</title>
+    <link rel="stylesheet" href="plan.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <button class="back-btn" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="app-title">旅遊行程規劃</h1>
+                <button class="menu-btn">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Trip Info Section -->
+            <section class="trip-info-section">
+                <div class="info-card">
+                    <div class="input-group">
+                        <label for="tripTitle">
+                            <i class="fas fa-map-marked-alt"></i>
+                            旅遊標題
+                        </label>
+                        <input type="text" id="tripTitle" placeholder="例如：台灣環島之旅" />
+                    </div>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="startDate">
+                                <i class="fas fa-calendar-alt"></i>
+                                開始日期
+                            </label>
+                            <input type="date" id="startDate" />
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="endDate">
+                                <i class="fas fa-calendar-check"></i>
+                                結束日期
+                            </label>
+                            <input type="date" id="endDate" />
+                        </div>
+                    </div>
+
+                    <button class="start-plan-btn" id="startPlanBtn">
+                        <i class="fas fa-route"></i>
+                        開始規劃行程
+                    </button>
+                </div>
+            </section>
+
+            <!-- Timeline Section -->
+            <section class="timeline-section" id="timelineSection" style="display: none;">
+                <div class="section-header">
+                    <h2>行程規劃</h2>
+                    <p>點擊下方按鈕新增景點</p>
+                </div>
+
+                <!-- Timeline Container -->
+                <div class="timeline-container" id="timelineContainer">
+                    <!-- Day groups will be dynamically added here -->
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="bottom-actions">
+                    <button class="action-btn secondary" id="clearAllBtn">
+                        <i class="fas fa-trash-alt"></i>
+                        清除全部
+                    </button>
+                    <button class="action-btn primary" id="saveItineraryBtn">
+                        <i class="fas fa-save"></i>
+                        儲存行程
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Spot Modal -->
+    <div class="modal" id="addSpotModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>手動新增景點</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="spotName">
+                        <i class="fas fa-map-marker-alt"></i>
+                        景點名稱
+                    </label>
+                    <input type="text" id="spotName" placeholder="例如：日月潭" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="spotTime">
+                        <i class="fas fa-clock"></i>
+                        時間
+                    </label>
+                    <input type="time" id="spotTime" value="09:00" />
+                </div>
+                
+                <div class="input-group">
+                    <label for="spotLocation">
+                        <i class="fas fa-home"></i>
+                        景點類型
+                    </label>
+                    <select id="spotLocation" class="location-select">
+                        <option value="outdoor">室外景點</option>
+                        <option value="indoor">室內景點</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="spotNote">
+                        <i class="fas fa-sticky-note"></i>
+                        備註（選填）
+                    </label>
+                    <textarea id="spotNote" rows="3" placeholder="例如：記得帶相機、預計停留2小時"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">取消</button>
+                <button class="btn-confirm" id="confirmAddSpot">確認新增</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Recommendation Modal -->
+    <div class="modal" id="aiRecommendModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✨ AI 智能行程規劃</h3>
+                <button class="modal-close" onclick="closeAiModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="ai-loading" id="aiLoading">
+                    <i class="fas fa-brain"></i>
+                    <p>AI 正在分析您的行程，生成最佳建議...</p>
+                    <small>這可能需要幾秒鐘時間</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item" data-page="home">
+            <div class="nav-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="nav-label">首頁</div>
+        </div>
+        <div class="nav-item" data-page="plan">
+            <div class="nav-icon">
+                <i class="fas fa-route"></i>
+            </div>
+            <div class="nav-label">行程規劃</div>
+        </div>
+        <div class="nav-item" data-page="write">
+            <div class="nav-icon">
+                <i class="fas fa-pen-fancy"></i>
+            </div>
+            <div class="nav-label">文案生成</div>
+        </div>
+        <div class="nav-item" data-page="search">
+            <div class="nav-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="nav-label">搜尋行程</div>
+        </div>
+        <div class="nav-item" data-page="account">
+            <div class="nav-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="nav-label">帳號</div>
+        </div>
+    </nav>
+
+    <script src="plan.js"></script>
+</body>
+</html>
