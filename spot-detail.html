@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>景點詳情 - Demo</title>
+    <link rel="stylesheet" href="spot-detail.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <button class="back-btn" id="backBtn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1 class="app-title">景點詳情</h1>
+                <button class="share-btn">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Spot Header -->
+            <section class="spot-header-section">
+                <div class="spot-image">
+                    <img id="spotImage" src="https://via.placeholder.com/400x300" alt="景點圖片">
+                    <div class="image-overlay"></div>
+                    <button class="ai-render-btn" id="aiRenderBtn">
+                        <i class="fas fa-magic"></i>
+                        AI 圖片渲染
+                    </button>
+                </div>
+                <div class="spot-title-section">
+                    <h1 id="spotName" class="spot-title">景點名稱</h1>
+                    <div class="spot-meta">
+                        <span class="location-badge" id="locationBadge">
+                            <i class="fas fa-sun"></i> 室外
+                        </span>
+                        <span class="time-badge" id="timeBadge">
+                            <i class="fas fa-clock"></i> 09:00
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Spot Info -->
+            <section class="spot-info-section">
+                <div class="info-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        景點簡介
+                    </h2>
+                    <p id="spotDescription" class="description-text">
+                        這是一個美麗的景點，值得您來探訪。這裡有豐富的自然景觀和人文特色，適合各年齡層的遊客前來遊玩。
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        位置資訊
+                    </h2>
+                    <p id="spotAddress" class="info-text">
+                        <i class="fas fa-location-arrow"></i>
+                        地址資訊載入中...
+                    </p>
+                    <button class="action-button" onclick="openMap()">
+                        <i class="fas fa-map"></i>
+                        在地圖中查看
+                    </button>
+                </div>
+
+                <div class="info-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-sticky-note"></i>
+                        行程備註
+                    </h2>
+                    <p id="spotNote" class="note-text">
+                        暫無備註
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-star"></i>
+                        推薦活動
+                    </h2>
+                    <div class="activities-list" id="activitiesList">
+                        <div class="activity-item">
+                            <i class="fas fa-camera"></i>
+                            <span>拍照打卡</span>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-utensils"></i>
+                            <span>品嚐美食</span>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-walking"></i>
+                            <span>散步遊覽</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h2 class="section-title">
+                        <i class="fas fa-lightbulb"></i>
+                        旅遊小提示
+                    </h2>
+                    <ul class="tips-list" id="tipsList">
+                        <li>建議停留時間：2-3小時</li>
+                        <li>最佳造訪時間：上午或傍晚</li>
+                        <li>記得攜帶相機和飲用水</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- AI Image Render Modal -->
+            <div class="modal" id="aiRenderModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>
+                            <i class="fas fa-magic"></i>
+                            AI 圖片渲染
+                        </h3>
+                        <button class="modal-close" onclick="closeRenderModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="render-options">
+                            <div class="option-group">
+                                <label class="option-label">
+                                    <i class="fas fa-cloud-sun"></i>
+                                    選擇天氣
+                                </label>
+                                <div class="weather-options">
+                                    <button class="weather-btn active" data-weather="sunny">
+                                        <i class="fas fa-sun"></i>
+                                        <span>晴天</span>
+                                    </button>
+                                    <button class="weather-btn" data-weather="cloudy">
+                                        <i class="fas fa-cloud"></i>
+                                        <span>陰天</span>
+                                    </button>
+                                    <button class="weather-btn" data-weather="rainy">
+                                        <i class="fas fa-cloud-rain"></i>
+                                        <span>雨天</span>
+                                    </button>
+                                    <button class="weather-btn" data-weather="night">
+                                        <i class="fas fa-moon"></i>
+                                        <span>夜晚</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="option-group">
+                                <label class="option-label">
+                                    <i class="fas fa-clock"></i>
+                                    選擇時段
+                                </label>
+                                <div class="time-options">
+                                    <button class="time-btn active" data-time="morning">
+                                        <i class="fas fa-mug-saucer"></i>
+                                        <span>早晨</span>
+                                    </button>
+                                    <button class="time-btn" data-time="afternoon">
+                                        <i class="fas fa-sun"></i>
+                                        <span>下午</span>
+                                    </button>
+                                    <button class="time-btn" data-time="evening">
+                                        <i class="fas fa-cloud-sun"></i>
+                                        <span>傍晚</span>
+                                    </button>
+                                    <button class="time-btn" data-time="night">
+                                        <i class="fas fa-moon"></i>
+                                        <span>深夜</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="preview-section">
+                                <div class="preview-label">預覽效果</div>
+                                <div class="preview-container">
+                                    <img id="previewImage" src="" alt="預覽圖片">
+                                    <div class="preview-loading" id="previewLoading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <p>AI 正在生成圖片...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" onclick="closeRenderModal()">取消</button>
+                        <button class="btn-confirm" id="applyRenderBtn">
+                            <i class="fas fa-check"></i>
+                            套用此圖片
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <section class="action-section">
+                <button class="primary-action-btn" id="editSpotBtn">
+                    <i class="fas fa-edit"></i>
+                    編輯景點
+                </button>
+                <button class="secondary-action-btn" id="deleteSpotBtn">
+                    <i class="fas fa-trash-alt"></i>
+                    刪除景點
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item" data-page="home">
+            <div class="nav-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="nav-label">首頁</div>
+        </div>
+        <div class="nav-item" data-page="plan">
+            <div class="nav-icon">
+                <i class="fas fa-route"></i>
+            </div>
+            <div class="nav-label">行程規劃</div>
+        </div>
+        <div class="nav-item" data-page="write">
+            <div class="nav-icon">
+                <i class="fas fa-pen-fancy"></i>
+            </div>
+            <div class="nav-label">文案生成</div>
+        </div>
+        <div class="nav-item" data-page="search">
+            <div class="nav-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="nav-label">搜尋行程</div>
+        </div>
+        <div class="nav-item" data-page="account">
+            <div class="nav-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="nav-label">帳號</div>
+        </div>
+    </nav>
+
+    <script src="spot-detail.js"></script>
+</body>
+</html>

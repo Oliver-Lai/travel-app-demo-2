@@ -28,19 +28,20 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
-    // Set default dates
-    const today = new Date();
-    startDate.valueAsDate = today;
+    // Set demo data in form fields
+    const demoDate = new Date('2025-10-26');
+    tripTitle.value = '台北一日精華遊';
+    startDate.valueAsDate = demoDate;
+    endDate.valueAsDate = demoDate;
     
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 2);
-    endDate.valueAsDate = tomorrow;
+    // Initialize modal confirm button for add mode
+    resetModalForAdd();
     
     // Event listeners
     startPlanBtn.addEventListener('click', startPlanning);
     clearAllBtn.addEventListener('click', clearAllSpots);
     saveItineraryBtn.addEventListener('click', saveItinerary);
-    confirmAddSpot.addEventListener('click', addManualSpot);
+    // confirmAddSpot uses onclick assignment in resetModalForAdd() to allow switching between add/edit modes
     
     // AI modal confirm button (removed - now auto-generates)
     // const confirmAiSpots = document.getElementById('confirmAiSpots');
@@ -235,25 +236,31 @@ function createSpotElement(spot, dayIndex, spotIndex) {
     const noteHTML = spot.note ? `<div class="spot-note"><i class="fas fa-sticky-note"></i> ${spot.note}</div>` : '';
     
     spotDiv.innerHTML = `
-        <div class="spot-header">
-            <div class="spot-name">
-                <i class="fas fa-map-marker-alt"></i>
-                ${spot.name}
-                ${locationBadge}
-                ${aiBadge}
+        <div class="spot-content" onclick="viewSpotDetail(${dayIndex}, ${spotIndex})">
+            <div class="spot-header">
+                <div class="spot-name">
+                    <i class="fas fa-map-marker-alt"></i>
+                    ${spot.name}
+                    ${locationBadge}
+                    ${aiBadge}
+                </div>
+                <div class="spot-time">
+                    <i class="fas fa-clock"></i>
+                    ${spot.time}
+                </div>
             </div>
-            <div class="spot-time">
-                <i class="fas fa-clock"></i>
-                ${spot.time}
-            </div>
+            ${noteHTML}
         </div>
-        ${noteHTML}
         <div class="spot-actions">
-            <button class="spot-action-btn edit" onclick="editSpot(${dayIndex}, ${spotIndex})">
+            <button class="spot-action-btn view" onclick="event.stopPropagation(); viewSpotDetail(${dayIndex}, ${spotIndex})">
+                <i class="fas fa-eye"></i>
+                查看
+            </button>
+            <button class="spot-action-btn edit" onclick="event.stopPropagation(); editSpot(${dayIndex}, ${spotIndex})">
                 <i class="fas fa-edit"></i>
                 編輯
             </button>
-            <button class="spot-action-btn delete" onclick="deleteSpot(${dayIndex}, ${spotIndex})">
+            <button class="spot-action-btn delete" onclick="event.stopPropagation(); deleteSpot(${dayIndex}, ${spotIndex})">
                 <i class="fas fa-trash-alt"></i>
                 刪除
             </button>
@@ -373,100 +380,137 @@ function generateAiItinerary(dayIndex, insertAtIndex) {
     try {
         console.log('Starting AI itinerary generation for day:', dayIndex, 'position:', insertAtIndex);
 
-        const recommendations = [
-            {
-                name: '國立故宮博物院',
-                type: '文化景點',
-                description: '世界四大博物館之一，收藏豐富的中華文物',
-                time: '09:00',
-                duration: '2-3小時',
-                location: 'indoor'
-            },
-            {
-                name: '象山步道',
-                type: '自然景觀',
-                description: '欣賞台北101的最佳觀景點，適合登山健行',
-                time: '14:00',
-                duration: '2小時',
-                location: 'outdoor'
-            },
-            {
-                name: '士林夜市',
-                type: '美食',
-                description: '台北最大夜市，品嚐各式台灣小吃',
-                time: '18:00',
-                duration: '2小時',
-                location: 'outdoor'
-            },
-            {
-                name: '龍山寺',
-                type: '文化景點',
-                description: '台北香火最盛的寺廟，建築精美值得參觀',
-                time: '10:00',
-                duration: '1小時',
-                location: 'indoor'
-            },
-            {
-                name: '陽明山國家公園',
-                type: '自然景觀',
-                description: '台北近郊的天然花園，四季皆有不同美景',
-                time: '08:00',
-                duration: '半天',
-                location: 'outdoor'
-            },
-            {
-                name: '中正紀念堂',
-                type: '文化景點',
-                description: '台灣民主象徵，建築宏偉，衛兵交接表演精彩',
-                time: '11:00',
-                duration: '1.5小時',
-                location: 'outdoor'
-            },
-            {
-                name: '台北101',
-                type: '地標建築',
-                description: '曾經的世界最高大樓，觀景台視野絕佳',
-                time: '15:00',
-                duration: '2小時',
-                location: 'indoor'
-            },
-            {
-                name: '誠品書店信義店',
-                type: '文化景點',
-                description: '24小時營業的文化地標，書香與咖啡香交織',
-                time: '13:00',
-                duration: '2小時',
-                location: 'indoor'
-            },
-            {
-                name: '台北市立美術館',
-                type: '藝術景點',
-                description: '台灣現代藝術的重要展館',
-                time: '10:00',
-                duration: '2小時',
-                location: 'indoor'
-            },
-            {
-                name: '貓空纜車',
-                type: '交通景觀',
-                description: '搭乘纜車欣賞台北美景，品嚐茶香',
-                time: '14:00',
-                duration: '3小時',
-                location: 'outdoor'
+        // 檢查是否為 demo 模式（台北一日精華遊）
+        const isDemoMode = itinerary.title === '台北一日精華遊' && 
+                          itinerary.startDate === '2025-10-26';
+        
+        const day = itinerary.days[dayIndex];
+        
+        let selected = [];
+        
+        if (isDemoMode && typeof window.demoTripData !== 'undefined') {
+            // Demo 模式：使用 demo-data.js 中的 AI 景點
+            const demoAiSpots = window.demoTripData.days[0].spots.filter(spot => spot.type === 'ai');
+            
+            // 過濾掉已經存在的景點
+            const existingNames = day.spots.map(s => s.name);
+            const availableSpots = demoAiSpots.filter(s => !existingNames.includes(s.name));
+            
+            if (availableSpots.length === 0) {
+                showMessage('所有 AI 推薦景點都已加入！', 'info');
+                closeAiModal();
+                return;
             }
-        ];
+            
+            // 使用 demo 中的所有 AI 景點
+            selected = JSON.parse(JSON.stringify(availableSpots)).map(spot => ({
+                name: spot.name,
+                type: 'AI推薦',
+                description: spot.note || '精選景點',
+                time: spot.time,
+                duration: '2小時',
+                location: spot.location,
+                rainyAlternative: spot.rainyAlternative || null
+            }));
+            
+        } else {
+            // 一般模式：使用原有的隨機生成邏輯
+            const recommendations = [
+                {
+                    name: '國立故宮博物院',
+                    type: '文化景點',
+                    description: '世界四大博物館之一，收藏豐富的中華文物',
+                    time: '09:00',
+                    duration: '2-3小時',
+                    location: 'indoor'
+                },
+                {
+                    name: '象山步道',
+                    type: '自然景觀',
+                    description: '欣賞台北101的最佳觀景點，適合登山健行',
+                    time: '14:00',
+                    duration: '2小時',
+                    location: 'outdoor'
+                },
+                {
+                    name: '士林夜市',
+                    type: '美食',
+                    description: '台北最大夜市，品嚐各式台灣小吃',
+                    time: '18:00',
+                    duration: '2小時',
+                    location: 'outdoor'
+                },
+                {
+                    name: '龍山寺',
+                    type: '文化景點',
+                    description: '台北香火最盛的寺廟，建築精美值得參觀',
+                    time: '10:00',
+                    duration: '1小時',
+                    location: 'indoor'
+                },
+                {
+                    name: '陽明山國家公園',
+                    type: '自然景觀',
+                    description: '台北近郊的天然花園，四季皆有不同美景',
+                    time: '08:00',
+                    duration: '半天',
+                    location: 'outdoor'
+                },
+                {
+                    name: '中正紀念堂',
+                    type: '文化景點',
+                    description: '台灣民主象徵，建築宏偉，衛兵交接表演精彩',
+                    time: '11:00',
+                    duration: '1.5小時',
+                    location: 'outdoor'
+                },
+                {
+                    name: '台北101',
+                    type: '地標建築',
+                    description: '曾經的世界最高大樓，觀景台視野絕佳',
+                    time: '15:00',
+                    duration: '2小時',
+                    location: 'indoor'
+                },
+                {
+                    name: '誠品書店信義店',
+                    type: '文化景點',
+                    description: '24小時營業的文化地標，書香與咖啡香交織',
+                    time: '13:00',
+                    duration: '2小時',
+                    location: 'indoor'
+                },
+                {
+                    name: '台北市立美術館',
+                    type: '藝術景點',
+                    description: '台灣現代藝術的重要展館',
+                    time: '10:00',
+                    duration: '2小時',
+                    location: 'indoor'
+                },
+                {
+                    name: '貓空纜車',
+                    type: '交通景觀',
+                    description: '搭乘纜車欣賞台北美景，品嚐茶香',
+                    time: '14:00',
+                    duration: '3小時',
+                    location: 'outdoor'
+                }
+            ];
 
-        // Shuffle and pick 3-4 recommendations
-        const shuffled = recommendations.sort(() => 0.5 - Math.random());
-        const selected = shuffled.slice(0, Math.floor(Math.random() * 2) + 3); // 3-4個
+            // Shuffle and pick 3-4 recommendations
+            const shuffled = recommendations.sort(() => 0.5 - Math.random());
+            selected = shuffled.slice(0, Math.floor(Math.random() * 2) + 3); // 3-4個
+        }
 
         console.log('Selected recommendations:', selected);
 
-        // Sort by time to avoid conflicts
-        selected.sort((a, b) => a.time.localeCompare(b.time));
+        // Sort by time to avoid conflicts (unless in demo mode with pre-defined times)
+        if (!isDemoMode) {
+            selected.sort((a, b) => a.time.localeCompare(b.time));
+        }
 
         // Calculate proper times to avoid conflicts
-        const day = itinerary.days[dayIndex];
         let insertPosition = insertAtIndex;
 
         console.log('Current day spots:', day.spots.length, 'Insert position:', insertPosition);
@@ -583,9 +627,10 @@ function generateAiItinerary(dayIndex, insertAtIndex) {
                 const spot = {
                     name: rec.name,
                     time: rec.time,
-                    note: `${rec.description} (停留時間：${rec.duration})`,
+                    note: rec.description ? `${rec.description} (停留時間：${rec.duration})` : rec.note || '',
                     type: 'ai',
-                    location: rec.location || 'outdoor'
+                    location: rec.location || 'outdoor',
+                    rainyAlternative: rec.rainyAlternative || null
                 };
 
                 day.spots.push(spot);
@@ -761,6 +806,15 @@ function updateExistingSpot(dayIndex, spotIndex) {
     resetModalForAdd();
 }
 
+// View Spot Detail
+function viewSpotDetail(dayIndex, spotIndex) {
+    // Save current itinerary to localStorage
+    localStorage.setItem('savedItinerary', JSON.stringify(itinerary));
+    
+    // Navigate to spot detail page with parameters
+    window.location.href = `spot-detail.html?day=${dayIndex}&spot=${spotIndex}`;
+}
+
 // Delete Spot
 function deleteSpot(dayIndex, spotIndex) {
     if (confirm('確定要刪除這個景點嗎？')) {
@@ -902,13 +956,15 @@ function navigateTo(page) {
     window.location.href = url;
 }
 
-// Indoor alternatives database
+// Indoor alternatives database (for spots without rainyAlternative data)
 const indoorAlternatives = {
     '象山步道': '台北市立美術館',
     '陽明山國家公園': '誠品書店信義店',
     '中正紀念堂': '國立故宮博物院',
     '貓空纜車': '台北101觀景台',
     '士林夜市': '微風南山美食街',
+    '大安森林公園': '誠品書店信義店',
+    '臨江街觀光夜市': '台北101美食街',
     '戶外景點': '台北市立圖書館總館'
 };
 
