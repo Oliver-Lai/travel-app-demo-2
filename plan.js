@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     // Set demo data in form fields
     const demoDate = new Date('2025-10-26');
-    tripTitle.value = '台北一日精華遊';
+    tripTitle.value = '台北一日遊';
     startDate.valueAsDate = demoDate;
     endDate.valueAsDate = demoDate;
     
