@@ -15,74 +15,86 @@ const spotImages = {
     '陽明山': 'default.jpeg',
     '中正紀念堂': 'default.jpeg',
     '台北101': 'demo-images/台北101/台北101.jpg',
+    '台北 101': 'demo-images/台北101/台北101.jpg',
     '誠品書店': 'default.jpeg',
     '市立美術館': 'default.jpeg',
     '台北市立美術館': 'default.jpeg',
     '貓空纜車': 'default.jpeg',
     '日月潭': 'default.jpeg',
-    '台北101觀景台': 'demo-images/台北101觀景台/台北101.jpg',
     '誠品書店信義店': 'default.jpeg',
     '微風南山美食街': 'default.jpeg',
     '台北市立圖書館總館': 'default.jpeg',
     '陽明山國家公園': 'default.jpeg',
-    '國立故宮博物院': 'default.jpeg'
+    '國立故宮博物院': 'default.jpeg',
+    '西門町': 'demo-images/西門町/西門町.jpg',
+    '華山 1914 文創園區': 'default.jpeg',
+    '國立臺灣博物館': 'default.jpeg',
+    '剝皮寮歷史街區': 'default.jpeg',
+    '永康街 (鼎泰豐)': 'default.jpeg',
+    '臨江街夜市 (通化夜市)': 'default.jpeg',
+    '[AI 建議] 中正紀念堂': 'default.jpeg',
+    '[AI 建議] 臨江街夜市 (通化夜市)': 'default.jpeg',
+    '[AI 建議] 剝皮寮歷史街區': 'default.jpeg',
+    '[AI 建議] 永康街 (鼎泰豐)': 'default.jpeg',
+    '[AI 建議] 國立臺灣博物館': 'default.jpeg',
+    '[雨天備案] 國立臺灣博物館': 'default.jpeg',
+    '[雨天備案] 華山 1914 文創園區': 'default.jpeg',
+    '[雨天備案] 台北市立美術館': 'default.jpeg',
+    '[雨天備案] 松山文創園區 (誠品)': 'default.jpeg',
+    '[雨天備案] 國立故宮博物院': 'default.jpeg'
 };
 
 // AI Rendered images database (Demo data - different weather and time combinations)
 const aiRenderedImages = {
-    '台北101觀景台': {
-        'sunny-morning': 'demo-images/台北101觀景台/sunny-morning.jpg',
-        'sunny-afternoon': 'demo-images/台北101觀景台/sunny-afternoon.jpg',
-        'sunny-evening': 'demo-images/台北101觀景台/sunny-evening.jpg',
-        'cloudy-morning': 'demo-images/台北101觀景台/cloudy-morning.jpg',
-        'cloudy-afternoon': 'demo-images/台北101觀景台/cloudy-afternoon.jpg',
-        'cloudy-evening': 'default.jpeg',
-        'rainy-morning': 'demo-images/台北101觀景台/rainy-morning.jpg',
-        'rainy-afternoon': 'demo-images/台北101觀景台/rainy-afternoon.jpg',
-        'rainy-evening': 'demo-images/台北101觀景台/rainy-evening.jpg',
-        'night-night': 'default.jpeg'
+    '西門町': {
+        'sunny-morning': 'demo-images/西門町/sunny-morning.jpg',
+        'sunny-afternoon': 'demo-images/西門町/sunny-afternoon.jpg',
+        'sunny-night': 'demo-images/西門町/sunny-night.jpg',
+        'cloudy-morning': 'demo-images/西門町/cloudy-morning.jpg',
+        'cloudy-afternoon': 'demo-images/西門町/cloudy-afternoon.jpg',
+        'cloudy-night': 'demo-images/西門町/cloudy-night.jpg',
+        'rainy-morning': 'demo-images/西門町/rainy-morning.jpg',
+        'rainy-afternoon': 'demo-images/西門町/rainy-afternoon.jpg',
+        'rainy-night': 'demo-images/西門町/rainy-night.jpg'
     },
     '象山步道': {
         'sunny-morning': 'default.jpeg',
         'sunny-afternoon': 'default.jpeg',
-        'sunny-evening': 'default.jpeg',
+        'sunny-night': 'default.jpeg',
         'cloudy-morning': 'default.jpeg',
         'cloudy-afternoon': 'default.jpeg',
-        'cloudy-evening': 'default.jpeg',
+        'cloudy-night': 'default.jpeg',
         'rainy-morning': 'default.jpeg',
         'rainy-afternoon': 'default.jpeg',
-        'rainy-evening': 'default.jpeg',
-        'night-night': 'default.jpeg'
+        'rainy-night': 'default.jpeg'
     },
     '士林夜市': {
         'sunny-morning': 'default.jpeg',
         'sunny-afternoon': 'default.jpeg',
-        'sunny-evening': 'default.jpeg',
+        'sunny-night': 'default.jpeg',
         'cloudy-morning': 'default.jpeg',
         'cloudy-afternoon': 'default.jpeg',
-        'cloudy-evening': 'default.jpeg',
+        'cloudy-night': 'default.jpeg',
         'rainy-morning': 'default.jpeg',
         'rainy-afternoon': 'default.jpeg',
-        'rainy-evening': 'default.jpeg',
-        'night-night': 'default.jpeg'
+        'rainy-night': 'default.jpeg'
     },
     // Default fallback images
     'default': {
         'sunny-morning': 'default.jpeg',
         'sunny-afternoon': 'default.jpeg',
-        'sunny-evening': 'default.jpeg',
+        'sunny-night': 'default.jpeg',
         'cloudy-morning': 'default.jpeg',
         'cloudy-afternoon': 'default.jpeg',
-        'cloudy-evening': 'default.jpeg',
+        'cloudy-night': 'default.jpeg',
         'rainy-morning': 'default.jpeg',
         'rainy-afternoon': 'default.jpeg',
-        'rainy-evening': 'default.jpeg',
-        'night-night': 'default.jpeg'
+        'rainy-night': 'default.jpeg'
     }
 };
 
 // AI Render state
-let currentWeather = 'sunny';
+let currentWeather = 'rainy';
 let currentTime = 'morning';
 let currentRenderedImage = null;
 
@@ -95,16 +107,33 @@ const spotDescriptions = {
     '陽明山': '陽明山國家公園是台北的後花園，擁有豐富的自然景觀和溫泉資源。春季的櫻花和海芋花季更是吸引大批遊客前來賞花。',
     '中正紀念堂': '中正紀念堂是台北市的地標性建築，園區廣闊，建築雄偉壯觀。每天整點的衛兵交接儀式是必看的表演。',
     '台北101': '台北101曾是世界第一高樓，是台北最具代表性的地標。89樓觀景台可以360度俯瞰台北市景，夜景更是美不勝收。',
+    '台北 101': '台北101曾是世界第一高樓，是台北最具代表性的地標。89樓觀景台可以360度俯瞰台北市景，夜景更是美不勝收。',
     '誠品書店': '誠品書店是台灣最知名的連鎖書店，不只賣書，更是一個文化生活空間。24小時營業的信義店是愛書人的天堂。',
     '市立美術館': '台北市立美術館是台灣第一座現代美術館，展出當代藝術作品，是藝術愛好者不可錯過的文化景點。',
     '貓空纜車': '貓空纜車是台北市第一條觀光纜車，全長4.03公里。搭乘纜車可以俯瞰台北市景，終點站貓空則以茶園和茶藝聞名。',
     '台北市立美術館': '台北市立美術館是台灣第一座現代美術館，展出當代藝術作品，是藝術愛好者不可錯過的文化景點。',
-    '台北101觀景台': '台北101觀景台位於89樓，高度382公尺，是俯瞰台北市全景的最佳地點。晴天時甚至可以看到桃園和基隆。',
     '誠品書店信義店': '誠品信義店是24小時營業的大型書店，結合書籍、音樂、展覽等多元文化元素，是台北夜生活的文化新選擇。',
     '微風南山美食街': '微風南山是台北最新的購物中心，B2美食街集結各國美食，從日本拉麵到台灣小吃應有盡有。',
     '台北市立圖書館總館': '台北市立圖書館總館是台北最大的公共圖書館，館藏豐富，閱讀空間舒適，是閱讀和學習的好地方。',
     '陽明山國家公園': '陽明山國家公園是台北的後花園，擁有豐富的自然景觀和溫泉資源。春季的櫻花和海芋花季更是吸引大批遊客前來賞花。',
-    '國立故宮博物院': '國立故宮博物院位於台北市士林區，是世界四大博物館之一。館藏近70萬件中國歷代文物藝術品，是中華文化瑰寶的寶庫。'
+    '國立故宮博物院': '國立故宮博物院位於台北市士林區，是世界四大博物館之一。館藏近70萬件中國歷代文物藝術品，是中華文化瑰寶的寶庫。',
+    '西門町': '西門町是台北最具代表性的年輕潮流聚集地，有台北原宿之稱。這裡充滿各式商店、電影院、美食餐廳，是購物、娛樂和品嚐美食的熱門地點。',
+    '華山 1914 文創園區': '華山1914文創園區前身為日治時期的酒廠，現已轉型為文創展演空間。園區內有眾多文創商店、展覽空間、餐廳咖啡廳，是體驗台灣文創產業的好去處。',
+    '國立臺灣博物館': '國立臺灣博物館是台灣歷史最悠久的博物館，位於二二八和平公園內。館內收藏豐富的自然史與人類學標本，建築本身也是國定古蹟。',
+    '剝皮寮歷史街區': '剝皮寮歷史街區保留了清代至日治時期的建築風貌，紅磚、木窗構成懷舊氛圍。這裡是電影《艋舺》的拍攝地，也是認識老台北萬華文化的窗口。',
+    '永康街 (鼎泰豐)': '永康街是台北著名的美食街，以鼎泰豐小籠包聞名國際。除了鼎泰豐，這裡還有許多特色餐廳、咖啡廳和甜品店，是美食愛好者的天堂。',
+    '臨江街夜市 (通化夜市)': '臨江街夜市又稱通化夜市，是在地人最愛的夜市之一。相較於觀光夜市，這裡更貼近台北人的日常生活，有許多道地的台灣小吃。',
+    '松山文創園區 (誠品)': '松山文創園區前身為松山菸廠，現為結合文創、設計、藝術的展演空間。園區內的誠品生活松菸店集結書店、選物店、餐廳，是文青必訪景點。',
+    '[AI 建議] 中正紀念堂': '中正紀念堂是台北市的地標性建築，園區廣闊，建築雄偉壯觀。每天整點的衛兵交接儀式是必看的表演。',
+    '[AI 建議] 臨江街夜市 (通化夜市)': '臨江街夜市又稱通化夜市，是在地人最愛的夜市之一。相較於觀光夜市，這裡更貼近台北人的日常生活，有許多道地的台灣小吃。',
+    '[AI 建議] 剝皮寮歷史街區': '剝皮寮歷史街區保留了清代至日治時期的建築風貌，紅磚、木窗構成懷舊氛圍。這裡是電影《艋舺》的拍攝地，也是認識老台北萬華文化的窗口。',
+    '[AI 建議] 永康街 (鼎泰豐)': '永康街是台北著名的美食街，以鼎泰豐小籠包聞名國際。除了鼎泰豐，這裡還有許多特色餐廳、咖啡廳和甜品店，是美食愛好者的天堂。',
+    '[AI 建議] 國立臺灣博物館': '國立臺灣博物館是台灣歷史最悠久的博物館，位於二二八和平公園內。館內收藏豐富的自然史與人類學標本，建築本身也是國定古蹟。',
+    '[雨天備案] 國立臺灣博物館': '國立臺灣博物館是台灣歷史最悠久的博物館，位於二二八和平公園內。館內收藏豐富的自然史與人類學標本，建築本身也是國定古蹟。',
+    '[雨天備案] 華山 1914 文創園區': '華山1914文創園區前身為日治時期的酒廠，現已轉型為文創展演空間。園區內有眾多文創商店、展覽空間、餐廳咖啡廳，是體驗台灣文創產業的好去處。',
+    '[雨天備案] 台北市立美術館': '台北市立美術館是台灣第一座現代美術館，展出當代藝術作品，是藝術愛好者不可錯過的文化景點。',
+    '[雨天備案] 松山文創園區 (誠品)': '松山文創園區前身為松山菸廠，現為結合文創、設計、藝術的展演空間。園區內的誠品生活松菸店集結書店、選物店、餐廳，是文青必訪景點。',
+    '[雨天備案] 國立故宮博物院': '國立故宮博物院位於台北市士林區，是世界四大博物館之一。館藏近70萬件中國歷代文物藝術品，是中華文化瑰寶的寶庫。'
 };
 
 // Initialize
@@ -127,7 +156,13 @@ function loadSpotData() {
                 itinerary.days[dayIndex].spots[spotIndex]) {
                 
                 spotData = itinerary.days[dayIndex].spots[spotIndex];
-                renderSpotDetails();
+                
+                // 只有西門町才顯示詳細資料
+                if (spotData.name === '西門町') {
+                    renderSpotDetails();
+                } else {
+                    showError('沒有景點詳細資料');
+                }
             } else {
                 showError('找不到景點資料');
             }

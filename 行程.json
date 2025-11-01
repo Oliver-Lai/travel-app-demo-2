@@ -1,0 +1,113 @@
+{
+  "title": "台北 2 日・自由行 (Demo 基礎)",
+  "description": "這是一個稀疏的基礎行程，用以展示 AI 增補功能。",
+  "days": [
+    {
+      "day_name": "Day 1",
+      "theme": "現代與潮流",
+      "events": [
+        {
+          "time": "10:00",
+          "title": "華山 1914 文創園區",
+          "description": "逛逛文創小店與展覽。",
+          "type": "indoor"
+        },
+        {
+          "time": "15:00",
+          "title": "西門町",
+          "description": "感受年輕潮流與街頭美食。",
+          "type": "outdoor"
+        },
+        {
+          "time": "19:00",
+          "title": "台北 101",
+          "description": "欣賞台北夜景。",
+          "type": "indoor"
+        }
+      ]
+    },
+    {
+      "day_name": "Day 2",
+      "theme": "歷史與文化",
+      "events": [
+        {
+          "time": "10:00",
+          "title": "龍山寺",
+          "description": "參拜祈福，感受傳統信仰。",
+          "type": "outdoor"
+        }
+      ]
+    }
+  ],
+  "ai_suggestions": {
+    "fill_gap": {
+      "day_1": [
+        {
+          "time": "13:00",
+          "title": "[AI 建議] 國立臺灣博物館",
+          "description": "AI 建議：參觀歷史建築與展覽，並可於附近享用午餐，再前往西門町。",
+          "type": "outdoor"
+        },
+        {
+          "time": "17:00",
+          "title": "[AI 建議] 中正紀念堂",
+          "description": "AI 建議：從西門町搭捷運很近，可觀賞傍晚的廣場與建築。",
+          "type": "outdoor",
+          "insert_after": "15:00"
+        }
+      ]
+    },
+    "continue_itinerary": {
+      "day_1": [
+        {
+          "time": "21:00",
+          "title": "[AI 建議] 臨江街夜市 (通化夜市)",
+          "description": "AI 建議：距離 101 不遠，體驗在地人逛的夜市美食。",
+          "type": "outdoor"
+        }
+      ],
+      "day_2": [
+        {
+          "time": "12:00",
+          "title": "[AI 建議] 剝皮寮歷史街區",
+          "description": "AI 建議：就在龍山寺旁邊，可在此感受老台北的紅磚建築風情。",
+          "type": "outdoor"
+        },
+        {
+          "time": "18:00",
+          "title": "[AI 建議] 永康街 (鼎泰豐)",
+          "description": "AI 建議：逛完中正紀念堂，可搭捷運至此享用晚餐。",
+          "type": "indoor",
+          "condition": "如果使用者手動新增了 14:00 中正紀念堂"
+        }
+      ]
+    },
+    "rainy_alternatives": [
+      {
+        "title": "[雨天備案] 國立臺灣博物館",
+        "description": "室內展覽，認識台灣自然與文化歷史。",
+        "type": "indoor"
+      },
+      {
+        "title": "[雨天備案] 華山 1914 文創園區",
+        "description": "逛逛文創小店與展覽。",
+        "type": "indoor"
+      },
+      {
+        "title": "[雨天備案] 台北市立美術館",
+        "description": "欣賞當代藝術作品與特展。",
+        "type": "indoor"
+      },
+      {
+        "title": "[雨天備案] 松山文創園區 (誠品)",
+        "description": "文創商店與書店，適合悠閒逛街。",
+        "type": "indoor"
+      },
+      {
+        "title": "[雨天備案] 國立故宮博物院",
+        "description": "世界級的中華文物收藏，值得細細品味。",
+        "type": "indoor"
+      }
+    ]
+  }
+}

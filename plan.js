@@ -29,10 +29,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initializeApp() {
     // Set demo data in form fields
-    const demoDate = new Date('2025-10-26');
-    tripTitle.value = '台北一日遊';
-    startDate.valueAsDate = demoDate;
-    endDate.valueAsDate = demoDate;
+    const demoStartDate = new Date('2025-11-15');
+    const demoEndDate = new Date('2025-11-16');
+    tripTitle.value = '台北 2 日・自由行';
+    startDate.valueAsDate = demoStartDate;
+    endDate.valueAsDate = demoEndDate;
     
     // Initialize modal confirm button for add mode
     resetModalForAdd();
@@ -96,27 +97,43 @@ function startPlanning() {
         return;
     }
     
-    // Initialize itinerary
-    itinerary.title = title;
-    itinerary.startDate = start;
-    itinerary.endDate = end;
-    itinerary.days = [];
+    // Check if this is the demo itinerary
+    const isDemoItinerary = title === '台北 2 日・自由行' && 
+                           start === '2025-11-15' && 
+                           end === '2025-11-16' &&
+                           typeof window.demoItineraryData !== 'undefined';
     
-    // Calculate days
-    const dayCount = calculateDaysBetween(start, end) + 1;
-    
-    // Create day structure
-    for (let i = 0; i < dayCount; i++) {
-        const date = new Date(start);
-        date.setDate(date.getDate() + i);
+    if (isDemoItinerary) {
+        // Load demo data
+        itinerary.title = window.demoItineraryData.title;
+        itinerary.startDate = window.demoItineraryData.startDate;
+        itinerary.endDate = window.demoItineraryData.endDate;
+        itinerary.days = JSON.parse(JSON.stringify(window.demoItineraryData.days));
         
-        itinerary.days.push({
-            dayNumber: i + 1,
-            date: date.toISOString().split('T')[0],
-            dateFormatted: formatDate(date),
-            spots: [],
-            isRainyMode: false
-        });
+        showMessage('已載入 Demo 行程！', 'success');
+    } else {
+        // Initialize itinerary normally
+        itinerary.title = title;
+        itinerary.startDate = start;
+        itinerary.endDate = end;
+        itinerary.days = [];
+        
+        // Calculate days
+        const dayCount = calculateDaysBetween(start, end) + 1;
+        
+        // Create day structure
+        for (let i = 0; i < dayCount; i++) {
+            const date = new Date(start);
+            date.setDate(date.getDate() + i);
+            
+            itinerary.days.push({
+                dayNumber: i + 1,
+                date: date.toISOString().split('T')[0],
+                dateFormatted: formatDate(date),
+                spots: [],
+                isRainyMode: false
+            });
+        }
     }
     
     // Show timeline section
@@ -380,16 +397,65 @@ function generateAiItinerary(dayIndex, insertAtIndex) {
     try {
         console.log('Starting AI itinerary generation for day:', dayIndex, 'position:', insertAtIndex);
 
-        // 檢查是否為 demo 模式（台北一日精華遊）
-        const isDemoMode = itinerary.title === '台北一日精華遊' && 
-                          itinerary.startDate === '2025-10-26';
+        // 檢查是否為新 demo 模式（台北 2 日自由行）
+        const isNewDemoMode = itinerary.title === '台北 2 日・自由行' && 
+                             itinerary.startDate === '2025-11-15' &&
+                             typeof window.demoItineraryData !== 'undefined';
+        
+        // 檢查是否為舊 demo 模式（台北一日精華遊）
+        const isOldDemoMode = itinerary.title === '台北一日精華遊' && 
+                             itinerary.startDate === '2025-10-26';
         
         const day = itinerary.days[dayIndex];
         
         let selected = [];
         
-        if (isDemoMode && typeof window.demoTripData !== 'undefined') {
-            // Demo 模式：使用 demo-data.js 中的 AI 景點
+        if (isNewDemoMode) {
+            // 新 Demo 模式：使用 demo-data-itinerary.js 中的 AI 景點
+            const aiSuggestions = window.demoItineraryData.ai_suggestions;
+            
+            // 決定要使用哪種 AI 建議（填補空檔 或 增加後續）
+            let suggestedSpots = [];
+            
+            // 檢查是否為填補空檔（insertAtIndex 在中間位置）
+            const isFillingGap = insertAtIndex !== -1 && insertAtIndex < day.spots.length;
+            
+            if (isFillingGap) {
+                // 填補空檔模式：使用 fill_gap 建議
+                const dayKey = `day_${dayIndex + 1}`;
+                if (aiSuggestions.fill_gap && aiSuggestions.fill_gap[dayKey]) {
+                    suggestedSpots = aiSuggestions.fill_gap[dayKey];
+                }
+            } else {
+                // 增加後續行程：使用 continue_itinerary 建議
+                const dayKey = `day_${dayIndex + 1}`;
+                if (aiSuggestions.continue_itinerary && aiSuggestions.continue_itinerary[dayKey]) {
+                    suggestedSpots = aiSuggestions.continue_itinerary[dayKey];
+                }
+            }
+            
+            // 過濾掉已經存在的景點
+            const existingNames = day.spots.map(s => s.name);
+            const availableSpots = suggestedSpots.filter(s => !existingNames.includes(s.name));
+            
+            if (availableSpots.length === 0) {
+                showMessage('目前沒有更多 AI 建議景點！', 'info');
+                closeAiModal();
+                return;
+            }
+            
+            // 使用 demo 中的 AI 景點
+            selected = JSON.parse(JSON.stringify(availableSpots)).map(spot => ({
+                name: spot.name,
+                type: 'AI推薦',
+                description: spot.note || '精選景點',
+                time: spot.time,
+                duration: '2小時',
+                location: spot.location
+            }));
+            
+        } else if (isOldDemoMode && typeof window.demoTripData !== 'undefined') {
+            // 舊 Demo 模式：使用 demo-data.js 中的 AI 景點
             const demoAiSpots = window.demoTripData.days[0].spots.filter(spot => spot.type === 'ai');
             
             // 過濾掉已經存在的景點
@@ -506,7 +572,7 @@ function generateAiItinerary(dayIndex, insertAtIndex) {
         console.log('Selected recommendations:', selected);
 
         // Sort by time to avoid conflicts (unless in demo mode with pre-defined times)
-        if (!isDemoMode) {
+        if (!isNewDemoMode && !isOldDemoMode) {
             selected.sort((a, b) => a.time.localeCompare(b.time));
         }
 
@@ -808,6 +874,9 @@ function updateExistingSpot(dayIndex, spotIndex) {
 
 // View Spot Detail
 function viewSpotDetail(dayIndex, spotIndex) {
+    // 先將當前行程儲存到 localStorage，讓 spot-detail.html 可以讀取
+    localStorage.setItem('savedItinerary', JSON.stringify(itinerary));
+    
     // Navigate to spot detail page with parameters
     window.location.href = `spot-detail.html?day=${dayIndex}&spot=${spotIndex}`;
 }
@@ -957,19 +1026,45 @@ function convertDayOutdoorToIndoor(dayIndex) {
     const day = itinerary.days[dayIndex];
     let changedCount = 0;
     
+    // 檢查是否為新 demo 模式
+    const isNewDemoMode = itinerary.title === '台北 2 日・自由行' && 
+                         itinerary.startDate === '2025-11-15' &&
+                         typeof window.demoItineraryData !== 'undefined';
+    
+    // 取得雨天備案景點池
+    let rainyAlternativesPool = [];
+    if (isNewDemoMode && window.demoItineraryData.ai_suggestions.rainy_alternatives) {
+        rainyAlternativesPool = window.demoItineraryData.ai_suggestions.rainy_alternatives;
+    }
+    
+    let alternativeIndex = 0;
+    
     day.spots.forEach((spot) => {
-        if (spot.location === 'outdoor') {
+        // 只轉換室外景點，且不是 AI 生成的景點（排除 type='ai' 的景點）
+        if (spot.location === 'outdoor' && spot.type !== 'ai') {
             // Save original name if not already saved
             if (!spot.originalName) {
                 spot.originalName = spot.name;
                 spot.originalNote = spot.note || '';
             }
             
-            // Convert to indoor alternative
-            const indoorAlternative = indoorAlternatives[spot.originalName] || indoorAlternatives['戶外景點'];
+            let indoorAlternative;
+            
+            // 在新 demo 模式下，使用預定義的雨天備案
+            if (isNewDemoMode && rainyAlternativesPool.length > 0) {
+                // 循環使用雨天備案景點
+                const rainySpot = rainyAlternativesPool[alternativeIndex % rainyAlternativesPool.length];
+                indoorAlternative = rainySpot.name;
+                spot.note = `${rainySpot.note} (原為: ${spot.originalName})`;
+                alternativeIndex++;
+            } else {
+                // 使用原有的 indoorAlternatives 對照表
+                indoorAlternative = indoorAlternatives[spot.originalName] || indoorAlternatives['戶外景點'];
+                spot.note = spot.originalNote ? `${spot.originalNote} (原為: ${spot.originalName})` : `原為: ${spot.originalName}`;
+            }
+            
             spot.name = indoorAlternative;
             spot.location = 'indoor';
-            spot.note = spot.originalNote ? `${spot.originalNote} (原為: ${spot.originalName})` : `原為: ${spot.originalName}`;
             changedCount++;
         }
     });
