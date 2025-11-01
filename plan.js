@@ -200,6 +200,11 @@ function renderTimeline() {
         const dayGroup = createDayGroup(day, dayIndex);
         timelineContainer.appendChild(dayGroup);
     });
+    
+    // 每次渲染時自動保存到 localStorage，確保手機瀏覽器也能正確保存
+    if (itinerary.days.length > 0 && itinerary.days.some(day => day.spots.length > 0)) {
+        localStorage.setItem('savedItinerary', JSON.stringify(itinerary));
+    }
 }
 
 // Create Day Group
