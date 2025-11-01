@@ -97,44 +97,36 @@ function startPlanning() {
         return;
     }
     
-    // Check if this is the demo itinerary
-    const isDemoItinerary = title === '台北 2 日・自由行' && 
-                           start === '2025-11-15' && 
-                           end === '2025-11-16' &&
-                           typeof window.demoItineraryData !== 'undefined';
+    // Initialize itinerary
+    itinerary.title = title;
+    itinerary.startDate = start;
+    itinerary.endDate = end;
+    itinerary.days = [];
     
-    if (isDemoItinerary) {
-        // Load demo data
-        itinerary.title = window.demoItineraryData.title;
-        itinerary.startDate = window.demoItineraryData.startDate;
-        itinerary.endDate = window.demoItineraryData.endDate;
-        itinerary.days = JSON.parse(JSON.stringify(window.demoItineraryData.days));
+    // Calculate days
+    const dayCount = calculateDaysBetween(start, end) + 1;
+    
+    // Create day structure
+    for (let i = 0; i < dayCount; i++) {
+        const date = new Date(start);
+        date.setDate(date.getDate() + i);
         
-        showMessage('已載入 Demo 行程！', 'success');
-    } else {
-        // Initialize itinerary normally
-        itinerary.title = title;
-        itinerary.startDate = start;
-        itinerary.endDate = end;
-        itinerary.days = [];
-        
-        // Calculate days
-        const dayCount = calculateDaysBetween(start, end) + 1;
-        
-        // Create day structure
-        for (let i = 0; i < dayCount; i++) {
-            const date = new Date(start);
-            date.setDate(date.getDate() + i);
-            
-            itinerary.days.push({
-                dayNumber: i + 1,
-                date: date.toISOString().split('T')[0],
-                dateFormatted: formatDate(date),
-                spots: [],
-                isRainyMode: false
-            });
-        }
+        itinerary.days.push({
+            dayNumber: i + 1,
+            date: date.toISOString().split('T')[0],
+            dateFormatted: formatDate(date),
+            spots: [],
+            isRainyMode: false
+        });
     }
+    
+    // 標記是否為 demo 模式（用於後續自動載入其他景點）
+    window.isDemoMode = title === '台北 2 日・自由行' && 
+                        start === '2025-11-15' && 
+                        end === '2025-11-16' &&
+                        typeof window.demoItineraryData !== 'undefined';
+    
+    window.demoSpotsLoaded = false; // 標記 demo 景點是否已載入
     
     // Show timeline section
     timelineSection.style.display = 'block';
@@ -373,8 +365,47 @@ function addManualSpot() {
     
     showMessage('景點已新增！', 'success');
     
+    // 檢查是否為第一個手動輸入的景點（Demo 模式）
+    if (window.isDemoMode && !window.demoSpotsLoaded) {
+        window.demoSpotsLoaded = true;
+        loadRemainingDemoSpots();
+    }
+    
     renderTimeline();
     closeModal();
+}
+
+// 載入剩餘的 demo 景點（除了第一個）
+function loadRemainingDemoSpots() {
+    if (!window.demoItineraryData) return;
+    
+    // 載入 Day 1 的其他景點（西門町、台北 101）
+    if (window.demoItineraryData.days[0].spots.length > 1) {
+        for (let i = 1; i < window.demoItineraryData.days[0].spots.length; i++) {
+            const spot = window.demoItineraryData.days[0].spots[i];
+            itinerary.days[0].spots.push({
+                name: spot.name,
+                time: spot.time,
+                note: spot.note,
+                type: spot.type,
+                location: spot.location
+            });
+        }
+    }
+    
+    // 載入 Day 2 的所有景點
+    if (window.demoItineraryData.days.length > 1) {
+        for (let i = 0; i < window.demoItineraryData.days[1].spots.length; i++) {
+            const spot = window.demoItineraryData.days[1].spots[i];
+            itinerary.days[1].spots.push({
+                name: spot.name,
+                time: spot.time,
+                note: spot.note,
+                type: spot.type,
+                location: spot.location
+            });
+        }
+    }
 }
 
 // Open AI Recommend Modal
@@ -1040,8 +1071,8 @@ function convertDayOutdoorToIndoor(dayIndex) {
     let alternativeIndex = 0;
     
     day.spots.forEach((spot) => {
-        // 只轉換室外景點，且不是 AI 生成的景點（排除 type='ai' 的景點）
-        if (spot.location === 'outdoor' && spot.type !== 'ai') {
+        // 轉換室外景點：包括手動新增的和 AI 生成的室外景點
+        if (spot.location === 'outdoor') {
             // Save original name if not already saved
             if (!spot.originalName) {
                 spot.originalName = spot.name;
@@ -1052,11 +1083,20 @@ function convertDayOutdoorToIndoor(dayIndex) {
             
             // 在新 demo 模式下，使用預定義的雨天備案
             if (isNewDemoMode && rainyAlternativesPool.length > 0) {
-                // 循環使用雨天備案景點
-                const rainySpot = rainyAlternativesPool[alternativeIndex % rainyAlternativesPool.length];
-                indoorAlternative = rainySpot.name;
-                spot.note = `${rainySpot.note} (原為: ${spot.originalName})`;
-                alternativeIndex++;
+                // 檢查是否有專門針對這個景點的雨天備案
+                const specificAlternative = rainyAlternativesPool.find(alt => alt.replaces === spot.originalName);
+                
+                if (specificAlternative) {
+                    // 使用專門的替代方案
+                    indoorAlternative = specificAlternative.name;
+                    spot.note = `${specificAlternative.note} (原為: ${spot.originalName})`;
+                } else {
+                    // 循環使用雨天備案景點
+                    const rainySpot = rainyAlternativesPool[alternativeIndex % rainyAlternativesPool.length];
+                    indoorAlternative = rainySpot.name;
+                    spot.note = `${rainySpot.note} (原為: ${spot.originalName})`;
+                    alternativeIndex++;
+                }
             } else {
                 // 使用原有的 indoorAlternatives 對照表
                 indoorAlternative = indoorAlternatives[spot.originalName] || indoorAlternatives['戶外景點'];

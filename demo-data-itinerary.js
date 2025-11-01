@@ -64,16 +64,8 @@ const demoItineraryData = {
                     "name": "[AI 建議] 國立臺灣博物館",
                     "note": "AI 建議：參觀歷史建築與展覽，並可於附近享用午餐，再前往西門町。",
                     "type": "ai",
-                    "location": "outdoor",
+                    "location": "indoor",
                     "insert_after": "10:00"
-                },
-                {
-                    "time": "17:00",
-                    "name": "[AI 建議] 中正紀念堂",
-                    "note": "AI 建議：從西門町搭捷運很近，可觀賞傍晚的廣場與建築。",
-                    "type": "ai",
-                    "location": "outdoor",
-                    "insert_after": "15:00"
                 }
             ]
         },
@@ -135,6 +127,13 @@ const demoItineraryData = {
                 "note": "世界級的中華文物收藏，值得細細品味。",
                 "type": "ai",
                 "location": "indoor"
+            },
+            {
+                "name": "[雨天備案] 微風南山美食街",
+                "note": "室內美食廣場，集結各國美食，雨天也能享受美食體驗。",
+                "type": "ai",
+                "location": "indoor",
+                "replaces": "[AI 建議] 臨江街夜市 (通化夜市)"
             }
         ]
     }
