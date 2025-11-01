@@ -35,6 +35,35 @@ function initializeApp() {
     startDate.valueAsDate = demoStartDate;
     endDate.valueAsDate = demoEndDate;
     
+    // 嘗試從 localStorage 載入已保存的行程
+    const savedItinerary = localStorage.getItem('savedItinerary');
+    if (savedItinerary) {
+        try {
+            const loadedItinerary = JSON.parse(savedItinerary);
+            // 檢查是否有有效的行程資料
+            if (loadedItinerary.days && loadedItinerary.days.length > 0) {
+                itinerary = loadedItinerary;
+                
+                // 更新表單欄位
+                tripTitle.value = itinerary.title;
+                startDate.value = itinerary.startDate;
+                endDate.value = itinerary.endDate;
+                
+                // 恢復 demo 模式標記
+                window.isDemoMode = itinerary.title === '台北 2 日・自由行' && 
+                                    itinerary.startDate === '2025-11-15' &&
+                                    typeof window.demoItineraryData !== 'undefined';
+                window.demoSpotsLoaded = true; // 標記為已載入
+                
+                // 顯示時間軸並渲染
+                timelineSection.style.display = 'block';
+                renderTimeline();
+            }
+        } catch (error) {
+            console.error('Failed to load saved itinerary:', error);
+        }
+    }
+    
     // Initialize modal confirm button for add mode
     resetModalForAdd();
     
@@ -928,8 +957,13 @@ function clearAllSpots() {
         itinerary.days.forEach(day => {
             day.spots = [];
         });
+        
+        // 清除所有 localStorage 暫存
+        localStorage.removeItem('savedItinerary');
+        localStorage.removeItem('editSpotContext');
+        
         renderTimeline();
-        showMessage('已清除所有景點', 'success');
+        showMessage('已清除所有景點與暫存資料', 'success');
     }
 }
 
