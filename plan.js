@@ -808,9 +808,6 @@ function updateExistingSpot(dayIndex, spotIndex) {
 
 // View Spot Detail
 function viewSpotDetail(dayIndex, spotIndex) {
-    // Save current itinerary to localStorage
-    localStorage.setItem('savedItinerary', JSON.stringify(itinerary));
-    
     // Navigate to spot detail page with parameters
     window.location.href = `spot-detail.html?day=${dayIndex}&spot=${spotIndex}`;
 }
@@ -846,14 +843,8 @@ function saveItinerary() {
         return;
     }
     
-    // Simulate saving
-    showMessage('行程已儲存！', 'success');
-    
-    // Log itinerary to console (for demo)
-    console.log('Saved Itinerary:', JSON.stringify(itinerary, null, 2));
-    
-    // Could implement actual save to localStorage or backend here
-    localStorage.setItem('savedItinerary', JSON.stringify(itinerary));
+    // Show message only (actual save functionality removed)
+    showMessage('儲存功能暫未啟用', 'error');
 }
 
 // Show Message
@@ -875,31 +866,8 @@ function showMessage(message, type = 'success') {
 
 // Load saved itinerary on page load (optional)
 function loadSavedItinerary() {
-    const saved = localStorage.getItem('savedItinerary');
-    if (saved) {
-        try {
-            const loaded = JSON.parse(saved);
-            
-            // Populate form
-            tripTitle.value = loaded.title;
-            startDate.value = loaded.startDate;
-            endDate.value = loaded.endDate;
-            
-            // Ask user if they want to load
-            if (confirm('發現已儲存的行程，要載入嗎？')) {
-                itinerary = loaded;
-                timelineSection.style.display = 'block';
-                renderTimeline();
-                showMessage('已載入儲存的行程', 'success');
-            }
-        } catch (e) {
-            console.error('Failed to load saved itinerary:', e);
-        }
-    }
+    // Load functionality removed
 }
-
-// Try to load saved itinerary on page load
-setTimeout(loadSavedItinerary, 500);
 
 // Set active navigation item based on current page
 function setActiveNavItem() {
