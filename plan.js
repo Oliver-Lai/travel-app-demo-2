@@ -758,7 +758,7 @@ function generateAiItinerary(dayIndex, insertAtIndex) {
                 const spot = {
                     name: rec.name,
                     time: rec.time,
-                    note: rec.description ? `${rec.description} (停留時間：${rec.duration})` : rec.note || '',
+                    note: rec.description || rec.note || '',
                     type: 'ai',
                     location: rec.location || 'outdoor',
                     rainyAlternative: rec.rainyAlternative || null
@@ -804,7 +804,7 @@ function generateAiItinerary(dayIndex, insertAtIndex) {
                 const spot = {
                     name: rec.name,
                     time: finalTime,
-                    note: `${rec.description} (停留時間：${rec.duration})`,
+                    note: rec.description || rec.note || '',
                     type: 'ai',
                     location: rec.location || 'outdoor'
                 };
