@@ -318,7 +318,8 @@ function initializeMap() {
         // Day 2
         { lat: 25.1352379, lng: 121.7342084, name: 'KEELUNG地標', day: 2, order: 1, time: '早上' },
         { lat: 25.1282113, lng: 121.7408143, name: '基隆廟口夜市（陳記泡泡冰）', day: 2, order: 2, time: '中午' },
-        { lat: 25.1290702, lng: 121.7414626, name: '基隆廟口夜市（肉圓）', day: 2, order: 3, time: '中午' }
+        { lat: 25.1290702, lng: 121.7414626, name: '基隆廟口夜市（肉圓）', day: 2, order: 3, time: '中午' },
+        { lat: 25.1310671, lng: 121.7383402, name: '基隆廟口夜市（天婦羅）', day: 2, order: 4, time: '下午' },
     ];
     
     // Calculate center and bounds
