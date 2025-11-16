@@ -6,6 +6,7 @@
     <title>旅遊文案生成器 - Demo</title>
     <link rel="stylesheet" href="write.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
 <body>
     <div class="app-container">
@@ -99,6 +100,22 @@
                     </div>
 
                     <div class="generated-content" id="generatedContent" style="display: none;">
+                        <div class="itinerary-preview">
+                            <h3>📍 您的行程預覽</h3>
+                            <p class="map-subtitle">基隆二日遊路線圖</p>
+                            <div id="map" class="map-container"></div>
+                            <div class="itinerary-legend">
+                                <div class="legend-item">
+                                    <span class="legend-marker day1">1</span>
+                                    <span>第一天行程點</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-marker day2">2</span>
+                                    <span>第二天行程點</span>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="content-card">
                             <div class="content-text">
                                 <h3>⚓ 雨都漫步：一趟穿梭色彩、歷史與美食的基隆之旅</h3>
@@ -197,6 +214,7 @@
         </div>
     </nav>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="write.js"></script>
 </body>
 </html>

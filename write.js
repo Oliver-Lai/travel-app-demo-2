@@ -299,7 +299,115 @@ function generateContent() {
         setTimeout(() => {
             loadingAnimation.style.display = 'none';
             generatedContent.style.display = 'block';
+            
+            // Initialize map after content is displayed
+            initializeMap();
         }, 2000);
+    }
+}
+
+// Initialize map with Keelung two-day itinerary
+function initializeMap() {
+    // Keelung itinerary locations
+    const itinerary = [
+        // Day 1
+        { lat: 25.1502699, lng: 121.7638044, name: '正濱漁港', day: 1, order: 1 },
+        { lat: 25.1593173, lng: 121.7608679, name: '和平島考古遺跡', day: 1, order: 2 },
+        { lat: 25.132058, lng: 121.7478555, name: '基隆主普壇', day: 1, order: 3 },
+        
+        // Day 2
+        { lat: 25.1352379, lng: 121.7342084, name: 'KEELUNG地標', day: 2, order: 1 },
+        { lat: 25.1282113, lng: 121.7408143, name: '基隆廟口夜市（陳記泡泡冰）', day: 2, order: 2 },
+        { lat: 25.1290702, lng: 121.7414626, name: '基隆廟口夜市（肉圓）', day: 2, order: 3 }
+    ];
+    
+    // Calculate center and bounds
+    const lats = itinerary.map(loc => loc.lat);
+    const lngs = itinerary.map(loc => loc.lng);
+    const centerLat = (Math.max(...lats) + Math.min(...lats)) / 2;
+    const centerLng = (Math.max(...lngs) + Math.min(...lngs)) / 2;
+    
+    // Initialize map centered on Keelung
+    const map = L.map('map').setView([centerLat, centerLng], 13);
+    
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    }).addTo(map);
+    
+    // Custom icon function
+    function createNumberIcon(number, day) {
+        const color = day === 1 ? '#667eea' : '#f56565';
+        return L.divIcon({
+            className: 'custom-marker',
+            html: `<div style="
+                background-color: ${color};
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                font-size: 14px;
+                border: 3px solid white;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            ">${number}</div>`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -16]
+        });
+    }
+    
+    // Add markers and create polylines
+    const day1Coords = [];
+    const day2Coords = [];
+    
+    itinerary.forEach((location) => {
+        const marker = L.marker([location.lat, location.lng], {
+            icon: createNumberIcon(location.order, location.day)
+        }).addTo(map);
+        
+        marker.bindPopup(`
+            <div style="text-align: center;">
+                <strong>${location.name}</strong><br>
+                <small>第${location.day}天 - 第${location.order}站</small>
+            </div>
+        `);
+        
+        if (location.day === 1) {
+            day1Coords.push([location.lat, location.lng]);
+        } else {
+            day2Coords.push([location.lat, location.lng]);
+        }
+    });
+    
+    // Draw route lines
+    if (day1Coords.length > 0) {
+        L.polyline(day1Coords, {
+            color: '#667eea',
+            weight: 3,
+            opacity: 0.7,
+            dashArray: '10, 5'
+        }).addTo(map);
+    }
+    
+    if (day2Coords.length > 0) {
+        L.polyline(day2Coords, {
+            color: '#f56565',
+            weight: 3,
+            opacity: 0.7,
+            dashArray: '10, 5'
+        }).addTo(map);
+    }
+    
+    // Fit map to show all markers with padding
+    const allCoords = [...day1Coords, ...day2Coords];
+    if (allCoords.length > 0) {
+        const bounds = L.latLngBounds(allCoords);
+        map.fitBounds(bounds, { padding: [30, 30] });
     }
 }
 
