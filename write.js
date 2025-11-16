@@ -311,14 +311,14 @@ function initializeMap() {
     // Keelung itinerary locations
     const itinerary = [
         // Day 1
-        { lat: 25.1502699, lng: 121.7638044, name: '正濱漁港', day: 1, order: 1 },
-        { lat: 25.1593173, lng: 121.7608679, name: '和平島考古遺跡', day: 1, order: 2 },
-        { lat: 25.132058, lng: 121.7478555, name: '基隆主普壇', day: 1, order: 3 },
+        { lat: 25.1502699, lng: 121.7638044, name: '正濱漁港', day: 1, order: 1, time: '早上' },
+        { lat: 25.1593173, lng: 121.7608679, name: '和平島考古遺跡', day: 1, order: 2, time: '下午' },
+        { lat: 25.132058, lng: 121.7478555, name: '基隆主普壇', day: 1, order: 3, time: '傍晚' },
         
         // Day 2
-        { lat: 25.1352379, lng: 121.7342084, name: 'KEELUNG地標', day: 2, order: 1 },
-        { lat: 25.1282113, lng: 121.7408143, name: '基隆廟口夜市（陳記泡泡冰）', day: 2, order: 2 },
-        { lat: 25.1290702, lng: 121.7414626, name: '基隆廟口夜市（肉圓）', day: 2, order: 3 }
+        { lat: 25.1352379, lng: 121.7342084, name: 'KEELUNG地標', day: 2, order: 1, time: '早上' },
+        { lat: 25.1282113, lng: 121.7408143, name: '基隆廟口夜市（陳記泡泡冰）', day: 2, order: 2, time: '中午' },
+        { lat: 25.1290702, lng: 121.7414626, name: '基隆廟口夜市（肉圓）', day: 2, order: 3, time: '中午' }
     ];
     
     // Calculate center and bounds
@@ -373,7 +373,8 @@ function initializeMap() {
         marker.bindPopup(`
             <div style="text-align: center;">
                 <strong>${location.name}</strong><br>
-                <small>第${location.day}天 - 第${location.order}站</small>
+                <small>第${location.day}天 - 第${location.order}站</small><br>
+                <small>遊玩時間：${location.time}</small>
             </div>
         `);
         
