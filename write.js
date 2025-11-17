@@ -216,34 +216,95 @@ function updateStepIndicator() {
     });
 }
 
-// Render sortable photos
+// Render itinerary cards
 function renderSortablePhotos() {
-    if (!sortablePhotos) return;
+    const itineraryCardsContainer = document.getElementById('itineraryCards');
+    if (!itineraryCardsContainer) return;
     
-    sortablePhotos.innerHTML = '';
+    itineraryCardsContainer.innerHTML = '';
     appState.sortedPhotos = [...appState.uploadedPhotos];
     
-    appState.sortedPhotos.forEach((photo, index) => {
-        const sortableItem = document.createElement('div');
-        sortableItem.className = 'sortable-item';
-        sortableItem.draggable = true;
-        sortableItem.dataset.index = index;
+    // Itinerary data mapping by location name
+    const itineraryDataMap = {
+        '正濱漁港': { name: '正濱漁港', time: '10:54', day: 1, sortTime: '10:54' },
+        '和平島考古遺跡': { name: '和平島考古遺跡', time: '13:36', day: 1, sortTime: '13:36' },
+        '基隆主普壇': { name: '基隆主普壇', time: '17:28', day: 1, sortTime: '17:28' },
+        'KEELUNG地標': { name: 'KEELUNG地標', time: '10:37', day: 2, sortTime: '10:37' },
+        '陳記泡泡冰': { name: '基隆廟口夜市（陳記泡泡冰）', time: '12:23', day: 2, sortTime: '12:23' },
+        '肉圓': { name: '基隆廟口夜市（肉圓）', time: '12:37', day: 2, sortTime: '12:37' },
+        '基隆中山陸橋': { name: '基隆中山陸橋', time: '13:44', day: 2, sortTime: '13:44' },
+    };
+    
+    // Match photos with itinerary data
+    const photoItineraryPairs = appState.sortedPhotos.map((photo, index) => {
+        // Extract location name from filename (remove .jpg extension)
+        const fileName = photo.file.name.replace(/\.(jpg|jpeg|png|gif)$/i, '');
         
-        sortableItem.innerHTML = `
-            <img src="${photo.src}" alt="Photo ${index + 1}">
-            <div class="photo-order">${index + 1}</div>
-            <div class="drag-handle">
-                <i class="fas fa-grip-vertical"></i>
+        // Try to match filename with itinerary data
+        let itinerary = null;
+        for (const key in itineraryDataMap) {
+            if (fileName.includes(key) || key.includes(fileName)) {
+                itinerary = itineraryDataMap[key];
+                break;
+            }
+        }
+        
+        // Fallback to default if no match found
+        if (!itinerary) {
+            itinerary = { 
+                name: fileName || `景點 ${index + 1}`, 
+                time: '待確認', 
+                day: Math.floor(index / 3) + 1,
+                sortTime: '99:99'
+            };
+        }
+        
+        return { photo, itinerary };
+    });
+    
+    // Sort by day first, then by time
+    photoItineraryPairs.sort((a, b) => {
+        if (a.itinerary.day !== b.itinerary.day) {
+            return a.itinerary.day - b.itinerary.day;
+        }
+        return a.itinerary.sortTime.localeCompare(b.itinerary.sortTime);
+    });
+    
+    // Update sortedPhotos array to match the sorted order
+    appState.sortedPhotos = photoItineraryPairs.map(pair => pair.photo);
+    
+    // Render sorted cards
+    photoItineraryPairs.forEach((pair, index) => {
+        const { photo, itinerary } = pair;
+        
+        const card = document.createElement('div');
+        card.className = 'itinerary-card';
+        card.dataset.index = index;
+        
+        card.innerHTML = `
+            <div class="itinerary-card-image">
+                <img src="${photo.src}" alt="${itinerary.name}">
+                <div class="itinerary-day-badge">Day ${itinerary.day}</div>
+            </div>
+            <div class="itinerary-card-content">
+                <div class="itinerary-card-header">
+                    <div class="itinerary-order">${index + 1}</div>
+                    <div class="itinerary-card-title">
+                        <h3>${itinerary.name}</h3>
+                    </div>
+                </div>
+                <div class="itinerary-card-info">
+                    <div class="itinerary-info-item">
+                        <i class="fas fa-clock"></i>
+                        <span class="info-label">拍攝時間</span>
+                        <span class="info-value">${itinerary.time}</span>
+                    </div>
+                    </div>
+                </div>
             </div>
         `;
         
-        // Add drag event listeners
-        sortableItem.addEventListener('dragstart', handleDragStart);
-        sortableItem.addEventListener('dragover', handleSortDragOver);
-        sortableItem.addEventListener('drop', handleSortDrop);
-        sortableItem.addEventListener('dragend', handleDragEnd);
-        
-        sortablePhotos.appendChild(sortableItem);
+        itineraryCardsContainer.appendChild(card);
     });
 }
 
